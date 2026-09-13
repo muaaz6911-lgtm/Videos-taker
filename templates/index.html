@@ -232,7 +232,57 @@ function setMode(mode, button) {
 }
 
 
-function extractMedia() {
+async function extractMedia() {
+
+    const url = document
+        .getElementById("urlInput")
+        .value
+        .trim();
+
+    const status =
+        document.getElementById("status");
+
+    if (!url) {
+
+        status.innerText =
+            "⚠️ Please paste a media URL first.";
+
+        return;
+    }
+
+    status.innerText = "⏳ Connecting to Python...";
+
+    try {
+
+        const response = await fetch("/api/extract", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                url: url,
+                mode: selectedMode
+            })
+
+        });
+
+        const data = await response.json();
+
+        status.innerText = data.message;
+
+    }
+
+    catch (error) {
+
+        status.innerText =
+            "❌ Could not connect to backend.";
+
+    }
+
+}
 
     const url = document
         .getElementById("urlInput")
