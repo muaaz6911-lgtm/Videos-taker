@@ -2,258 +2,686 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<title>Media Extractor</title>
 
-    <title>Media Extractor</title>
+<style>
 
-    <style>
+/* =====================
+   VARIABLES
+===================== */
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+:root {
+    --primary: #7c4dff;
+    --secondary: #a855f7;
+    --glow: rgba(124, 77, 255, 0.45);
+}
 
 
-        body {
-            min-height: 100vh;
+/* =====================
+   RESET
+===================== */
 
-            background: linear-gradient(
-                135deg,
-                #0f0c29,
-                #302b63,
-                #24243e
-            );
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-            color: white;
 
-            display: flex;
+/* =====================
+   BODY
+===================== */
 
-            justify-content: center;
+body {
 
-            align-items: center;
+    min-height: 100vh;
 
-            overflow: hidden;
-        }
+    background:
+        linear-gradient(
+            135deg,
+            #09071a,
+            #17113a,
+            #09071a
+        );
 
+    color: white;
 
-        .container {
+    overflow-x: hidden;
 
-            width: 90%;
+    padding: 25px;
 
-            max-width: 600px;
+}
 
-            padding: 45px 30px;
 
-            border-radius: 25px;
+/* =====================
+   BACKGROUND GLOW
+===================== */
 
-            background: rgba(
-                255,
-                255,
-                255,
-                0.08
-            );
+.orb {
 
-            backdrop-filter: blur(20px);
+    position: fixed;
 
-            border: 1px solid rgba(
-                255,
-                255,
-                255,
-                0.15
-            );
+    border-radius: 50%;
 
-            box-shadow:
-                0 8px 32px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.4
-                );
+    filter: blur(90px);
 
-            text-align: center;
+    opacity: 0.35;
 
-            animation:
-                appear
-                0.8s
-                ease;
-        }
+    z-index: -1;
 
+    animation: float 8s ease-in-out infinite;
 
-        h1 {
+}
 
-            font-size: 42px;
+.orb1 {
 
-            margin-bottom: 10px;
+    width: 280px;
+    height: 280px;
 
-            letter-spacing: 2px;
-        }
+    background: var(--primary);
 
+    top: -100px;
+    left: -100px;
 
-        .subtitle {
+}
 
-            color: #cfcfcf;
+.orb2 {
 
-            margin-bottom: 35px;
-        }
+    width: 300px;
+    height: 300px;
 
+    background: var(--secondary);
 
-        .mode {
+    bottom: -120px;
+    right: -100px;
 
-            display: flex;
+    animation-delay: 2s;
 
-            gap: 12px;
+}
 
-            margin-bottom: 25px;
-        }
 
+/* =====================
+   MENU BUTTON
+===================== */
 
-        .mode button {
+.menu-btn {
 
-            flex: 1;
+    position: fixed;
 
-            padding: 14px;
+    top: 22px;
+    right: 22px;
 
-            border: none;
+    width: 50px;
+    height: 50px;
 
-            border-radius: 12px;
+    border: none;
 
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.08
-                );
+    border-radius: 15px;
 
-            color: white;
+    background:
+        rgba(255,255,255,0.1);
 
-            cursor: pointer;
+    border:
+        1px solid
+        rgba(255,255,255,0.15);
 
-            transition: 0.3s;
-        }
+    backdrop-filter: blur(20px);
 
+    color: white;
 
-        .mode button.active {
+    font-size: 24px;
 
-            background: #7c4dff;
-        }
+    cursor: pointer;
 
+    z-index: 9999;
 
-        .mode button:hover {
+    transition: 0.3s;
 
-            transform:
-                translateY(-2px);
-        }
+}
 
+.menu-btn:hover {
 
-        input {
+    transform: scale(1.08);
 
-            width: 100%;
+}
 
-            padding: 17px;
 
-            border: none;
+/* =====================
+   MENU PANEL
+===================== */
 
-            border-radius: 12px;
+.menu-panel {
 
-            outline: none;
+    position: fixed;
 
-            margin-bottom: 18px;
+    top: 82px;
+    right: 22px;
 
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.12
-                );
+    width: 230px;
 
-            color: white;
+    padding: 20px;
 
-            font-size: 15px;
-        }
+    border-radius: 20px;
 
+    background:
+        rgba(20,15,45,0.92);
 
-        input::placeholder {
+    backdrop-filter: blur(25px);
 
-            color: #bdbdbd;
-        }
+    border:
+        1px solid
+        rgba(255,255,255,0.15);
 
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,0.5);
 
-        .extract {
+    z-index: 9998;
 
-            width: 100%;
+    opacity: 0;
 
-            padding: 17px;
+    transform:
+        translateY(-10px)
+        scale(0.95);
 
-            border: none;
+    pointer-events: none;
 
-            border-radius: 12px;
+    transition: 0.3s;
 
-            background:
-                linear-gradient(
-                    90deg,
-                    #7c4dff,
-                    #a855f7
-                );
+}
 
-            color: white;
+.menu-panel.show {
 
-            font-size: 16px;
+    opacity: 1;
 
-            font-weight: bold;
+    transform:
+        translateY(0)
+        scale(1);
 
-            cursor: pointer;
+    pointer-events: auto;
 
-            transition: 0.3s;
-        }
+}
 
+.menu-panel h3 {
 
-        .extract:hover {
+    margin-bottom: 18px;
 
-            transform:
-                scale(1.02);
-        }
+    font-size: 16px;
 
+    color: white;
 
-        .status {
+}
 
-            margin-top: 20px;
 
-            color: #cfcfcf;
+/* =====================
+   COLOR GRID
+===================== */
 
-            min-height: 20px;
-        }
+.colors {
 
+    display: grid;
 
-        @keyframes appear {
+    grid-template-columns:
+        repeat(4, 1fr);
 
-            from {
+    gap: 14px;
 
-                opacity: 0;
+}
 
-                transform:
-                    translateY(30px);
-            }
+.color {
 
+    width: 38px;
+    height: 38px;
 
-            to {
+    border-radius: 50%;
 
-                opacity: 1;
+    cursor: pointer;
 
-                transform:
-                    translateY(0);
-            }
+    border:
+        2px solid
+        rgba(255,255,255,0.3);
 
-        }
+    transition: 0.25s;
 
-    </style>
+}
+
+.color:hover {
+
+    transform: scale(1.2);
+
+    border-color: white;
+
+}
+
+
+/* =====================
+   MAIN WRAPPER
+===================== */
+
+.main {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding-top: 20px;
+
+}
+
+
+/* =====================
+   WEBSITE NAME
+===================== */
+
+.brand {
+
+    text-align: center;
+
+    margin-bottom: 28px;
+
+    animation:
+        brandAppear
+        1s ease;
+
+}
+
+.brand h1 {
+
+    font-size: 48px;
+
+    letter-spacing: 4px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            90deg,
+            white,
+            var(--primary),
+            white
+        );
+
+    background-size: 200%;
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        shine
+        5s linear infinite;
+
+}
+
+.brand p {
+
+    margin-top: 10px;
+
+    color: #bdbdbd;
+
+    font-size: 15px;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =====================
+   GLASS CARD
+===================== */
+
+.container {
+
+    width: 100%;
+
+    max-width: 600px;
+
+    padding: 35px;
+
+    border-radius: 28px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(25px);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.16);
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.4);
+
+    text-align: center;
+
+    animation:
+        cardAppear
+        0.8s ease;
+
+}
+
+
+/* =====================
+   FORMAT BUTTONS
+===================== */
+
+.mode {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+
+}
+
+.mode button {
+
+    flex: 1;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.1);
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.mode button:hover {
+
+    transform:
+        translateY(-3px);
+
+}
+
+.mode button.active {
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            var(--secondary)
+        );
+
+    box-shadow:
+        0 7px 25px
+        var(--glow);
+
+}
+
+
+/* =====================
+   URL INPUT
+===================== */
+
+input {
+
+    width: 100%;
+
+    padding: 18px;
+
+    border-radius: 15px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.12);
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+
+    font-size: 15px;
+
+    margin-bottom: 18px;
+
+    transition: 0.3s;
+
+}
+
+input:focus {
+
+    border-color:
+        var(--primary);
+
+    box-shadow:
+        0 0 20px
+        var(--glow);
+
+}
+
+input::placeholder {
+
+    color: #aaa;
+
+}
+
+
+/* =====================
+   DOWNLOAD BUTTON
+===================== */
+
+.extract {
+
+    width: 100%;
+
+    padding: 18px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            var(--secondary)
+        );
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 30px
+        var(--glow);
+
+    transition: 0.3s;
+
+}
+
+.extract:hover {
+
+    transform:
+        translateY(-3px);
+
+}
+
+.extract:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =====================
+   STATUS
+===================== */
+
+.status {
+
+    min-height: 24px;
+
+    margin-top: 20px;
+
+    color: #d0d0d0;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================
+   ANIMATIONS
+===================== */
+
+@keyframes cardAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(40px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+@keyframes brandAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(-25px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+@keyframes shine {
+
+    0% {
+
+        background-position: 0%;
+
+    }
+
+    100% {
+
+        background-position: 200%;
+
+    }
+
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+
+        transform:
+            translate(0,0);
+
+    }
+
+    50% {
+
+        transform:
+            translate(30px,40px);
+
+    }
+
+}
+
+
+/* =====================
+   MOBILE
+===================== */
+
+@media (max-width: 600px) {
+
+    body {
+
+        padding: 15px;
+
+    }
+
+    .brand h1 {
+
+        font-size: 34px;
+
+        letter-spacing: 2px;
+
+    }
+
+    .container {
+
+        padding: 25px 20px;
+
+    }
+
+    .menu-btn {
+
+        top: 15px;
+        right: 15px;
+
+    }
+
+    .menu-panel {
+
+        top: 75px;
+        right: 15px;
+
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -261,73 +689,168 @@
 <body>
 
 
-<div class="container">
+<!-- BACKGROUND -->
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 
 
-    <h1>MEDIA EXTRACTOR</h1>
+<!-- MENU -->
+
+<button
+    class="menu-btn"
+    onclick="toggleMenu()"
+>
+☰
+</button>
 
 
-    <p class="subtitle">
+<div
+    class="menu-panel"
+    id="menuPanel"
+>
 
-        Extract and process your media
-
-    </p>
-
-
-    <div class="mode">
+    <h3>🎨 Choose Theme</h3>
 
 
-        <button
-            class="active"
-            onclick="setMode('mp4', this)"
-        >
+    <div class="colors">
 
-            🎬 MP4
+        <div
+            class="color"
+            style="background:#7c4dff"
+            onclick="setTheme('purple')"
+        ></div>
 
-        </button>
+        <div
+            class="color"
+            style="background:#2196f3"
+            onclick="setTheme('blue')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#00c853"
+            onclick="setTheme('green')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#ff1744"
+            onclick="setTheme('red')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#ff9800"
+            onclick="setTheme('orange')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#e91e63"
+            onclick="setTheme('pink')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#00bcd4"
+            onclick="setTheme('cyan')"
+        ></div>
+
+        <div
+            class="color"
+            style="background:#ffffff"
+            onclick="setTheme('white')"
+        ></div>
+
+    </div>
+
+</div>
 
 
-        <button
-            onclick="setMode('mp3', this)"
-        >
+<!-- MAIN -->
 
-            🎵 MP3
+<div class="main">
 
-        </button>
 
+    <!-- NAME TOP -->
+
+    <div class="brand">
+
+        <h1>MEDIA EXTRACTOR</h1>
+
+        <p>
+            Extract • Convert • Download
+        </p>
 
     </div>
 
 
-    <input
-        type="text"
+    <!-- GLASS CARD -->
 
-        id="urlInput"
-
-        placeholder="Paste your media URL here..."
-    >
+    <div class="container">
 
 
-    <button
+        <!-- FORMAT -->
 
-        class="extract"
+        <div class="mode">
 
-        onclick="extractMedia()"
+            <button
+                class="active"
+                onclick="setMode('mp4', this)"
+            >
+                🎬 MP4
+            </button>
 
-    >
 
-        EXTRACT MEDIA
+            <button
+                onclick="setMode('mp3', this)"
+            >
+                🎵 MP3
+            </button>
 
-    </button>
+        </div>
 
 
-    <div
+        <!-- URL -->
 
-        class="status"
+        <input
 
-        id="status"
+            type="text"
 
-    ></div>
+            id="urlInput"
+
+            placeholder="Paste your media URL here..."
+
+        >
+
+
+        <!-- BUTTON -->
+
+        <button
+
+            class="extract"
+
+            id="extractButton"
+
+            onclick="extractMedia()"
+
+        >
+
+            DOWNLOAD MP4
+
+        </button>
+
+
+        <!-- STATUS -->
+
+        <div
+            class="status"
+            id="status"
+        ></div>
+
+
+    </div>
 
 
 </div>
@@ -338,6 +861,112 @@
 
 let selectedMode = "mp4";
 
+
+/* =====================
+   MENU
+===================== */
+
+function toggleMenu() {
+
+    document
+        .getElementById("menuPanel")
+        .classList.toggle("show");
+
+}
+
+
+/* =====================
+   THEMES
+===================== */
+
+function setTheme(theme) {
+
+
+    const themes = {
+
+        purple: [
+            "#7c4dff",
+            "#a855f7",
+            "rgba(124,77,255,0.45)"
+        ],
+
+        blue: [
+            "#2196f3",
+            "#00bcd4",
+            "rgba(33,150,243,0.45)"
+        ],
+
+        green: [
+            "#00c853",
+            "#00e676",
+            "rgba(0,200,83,0.45)"
+        ],
+
+        red: [
+            "#ff1744",
+            "#ff5252",
+            "rgba(255,23,68,0.45)"
+        ],
+
+        orange: [
+            "#ff9800",
+            "#ff5722",
+            "rgba(255,152,0,0.45)"
+        ],
+
+        pink: [
+            "#e91e63",
+            "#ff4081",
+            "rgba(233,30,99,0.45)"
+        ],
+
+        cyan: [
+            "#00bcd4",
+            "#18ffff",
+            "rgba(0,188,212,0.45)"
+        ],
+
+        white: [
+            "#999999",
+            "#ffffff",
+            "rgba(255,255,255,0.4)"
+        ]
+
+    };
+
+
+    const root =
+        document.documentElement;
+
+
+    root.style.setProperty(
+        "--primary",
+        themes[theme][0]
+    );
+
+
+    root.style.setProperty(
+        "--secondary",
+        themes[theme][1]
+    );
+
+
+    root.style.setProperty(
+        "--glow",
+        themes[theme][2]
+    );
+
+
+    document
+        .getElementById("menuPanel")
+        .classList.remove("show");
+
+}
+
+
+/* =====================
+   FORMAT MODE
+===================== */
 
 function setMode(mode, button) {
 
@@ -358,7 +987,7 @@ function setMode(mode, button) {
 
 
     document
-        .querySelector(".extract")
+        .getElementById("extractButton")
         .innerText =
 
             mode === "mp3"
@@ -370,80 +999,146 @@ function setMode(mode, button) {
 }
 
 
+/* =====================
+   EXTRACT MEDIA
+===================== */
+
 async function extractMedia() {
 
 
-    const url = document
-
+    const url =
+        document
         .getElementById("urlInput")
-
         .value
-
         .trim();
 
 
-    const status = document
-
+    const status =
+        document
         .getElementById("status");
+
+
+    const button =
+        document
+        .getElementById("extractButton");
 
 
     if (!url) {
 
-
         status.innerText =
-
             "⚠️ Please paste a media URL first.";
-
 
         return;
 
     }
 
 
+    button.disabled = true;
+
+
+    button.innerText =
+        "⏳ PROCESSING...";
+
+
     status.innerText =
 
-        "⏳ Connecting to Python...";
+        selectedMode === "mp3"
+
+        ? "🎵 Converting media..."
+
+        : "🎬 Preparing media...";
 
 
     try {
 
 
-        const response = await fetch(
+        const response =
+            await fetch(
 
-            "/api/extract",
+                "/api/extract",
 
-            {
+                {
 
-                method: "POST",
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            url: url,
+
+                            mode: selectedMode
+
+                        })
+
+                }
+
+            );
 
 
-                headers: {
-
-                    "Content-Type":
-                        "application/json"
-
-                },
+        if (!response.ok) {
 
 
-                body: JSON.stringify({
+            const error =
+                await response.json();
 
-                    url: url,
 
-                    mode: selectedMode
+            throw new Error(
+                error.message
+                ||
+                "Processing failed"
+            );
 
-                })
+        }
 
-            }
 
+        const blob =
+            await response.blob();
+
+
+        const downloadUrl =
+            URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href =
+            downloadUrl;
+
+
+        link.download =
+
+            selectedMode === "mp3"
+
+            ? "media.mp3"
+
+            : "media.mp4";
+
+
+        document.body.appendChild(link);
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        URL.revokeObjectURL(
+            downloadUrl
         );
 
 
-        const data =
-            await response.json();
-
-
         status.innerText =
-            data.message;
+            "✅ Download started!";
 
 
     }
@@ -453,11 +1148,21 @@ async function extractMedia() {
 
 
         status.innerText =
-
-            "❌ Could not connect to backend.";
+            "❌ " + error.message;
 
     }
 
+
+    button.disabled = false;
+
+
+    button.innerText =
+
+        selectedMode === "mp3"
+
+        ? "CONVERT TO MP3"
+
+        : "DOWNLOAD MP4";
 
 }
 
@@ -466,5 +1171,4 @@ async function extractMedia() {
 
 
 </body>
-
 </html>
